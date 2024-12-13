@@ -1,0 +1,37 @@
+// prisma/schema.prisma
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider     = "postgresql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+//Todo: en un futuro, crear el modelo de usuario y la relacion con el store(1 usuario puede tener mas de 1 store)
+
+model User {
+  id        String   @id @default(uuid())
+  name      String
+  email     String   @unique
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relación uno-a-muchos: Un usuario puede tener muchas tiendas
+  stores Store[]
+}
+
+model Store {
+  id        String   @id @default(uuid())
+  name      String
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Campo de relación para asociar la tienda con un usuario
+  user User @relation(fields: [userId], references: [id])
+
+  @@index([userId]) // Índice para optimizar búsquedas por userId
+}
