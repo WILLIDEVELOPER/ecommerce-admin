@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { getUserId } from "@/lib/utils";
-import { SettingsForm } from "@/modules/shop/components/settings-form";
+import { SettingsForm } from "@/modules/shop/components/settings/settings-form";
 import { redirect } from "next/navigation";
 
 interface SettingsPageProps {
