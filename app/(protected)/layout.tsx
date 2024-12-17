@@ -1,5 +1,5 @@
-import { auth } from "@/auth";
 import { db } from "@/lib/db";
+import { getUserId } from "@/lib/utils";
 import { redirect } from "next/navigation";
 
 export default async function SetUpLayout({
@@ -7,8 +7,7 @@ export default async function SetUpLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const session = await auth();
-  const userId = session?.user?.id;
+  const userId = await getUserId();
 
   if (!userId) return null;
 

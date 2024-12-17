@@ -1,6 +1,6 @@
-import { auth } from "@/auth";
 import Navbar from "@/components/navbar";
 import { db } from "@/lib/db";
+import { getUserId } from "@/lib/utils";
 import { redirect } from "next/navigation";
 
 export default async function DashboardLayout({
@@ -13,8 +13,8 @@ export default async function DashboardLayout({
   const resolvedParams = await params; // Asegúrate de que params esté resuelto si es una promesa
   const { storeId } = resolvedParams;
 
-  const session = await auth();
-  const userId = session?.user?.id ?? null;
+
+  const userId = await getUserId();
 
   if (!userId) return null;
 
