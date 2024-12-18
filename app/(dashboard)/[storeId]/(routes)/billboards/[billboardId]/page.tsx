@@ -8,7 +8,7 @@ const BillboardPage = async ({
 }) => {
   const billboard = await db.billboard.findUnique({
     where: {
-      id: params.billboardId,
+      id: params.billboardId,  
     },
   });
   return (
