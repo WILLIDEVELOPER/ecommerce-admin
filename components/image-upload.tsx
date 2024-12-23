@@ -27,14 +27,13 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
   }, []);
 
   const onUpload = (result: any) => {
-    console.log({ result });
-
     onChange(result.info.secure_url);
   };
 
   if (!isMounted) {
     return null;
   }
+
   return (
     <div>
       <div className="mb-4 flex items-center gap-4">
@@ -50,14 +49,14 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
                 variant="destructive"
                 size="icon"
               >
-                <Trash className="h-4 w-4" />
+                <Trash className="w-4 h-4" />
               </Button>
             </div>
             <Image fill className="object-cover" alt="Image" src={url} />
           </div>
         ))}
       </div>
-      <CldUploadWidget onSuccess={onUpload} uploadPreset="swift-cloud-5723">
+      <CldUploadWidget onUpload={onUpload} uploadPreset="xd1zgfvt">
         {({ open }) => {
           const onClick = () => {
             open();
@@ -67,11 +66,11 @@ const ImageUpload: React.FC<ImageUploadProps> = ({
             <Button
               type="button"
               disabled={disabled}
-              variant="secondary"
+              variant={"secondary"}
               onClick={onClick}
             >
               <ImagePlus className="h-4 w-4 mr-2" />
-              Upload an image
+              Upload an Image
             </Button>
           );
         }}

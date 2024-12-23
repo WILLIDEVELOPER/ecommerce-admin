@@ -142,7 +142,7 @@ export const ColorForm: React.FC<ColorFormProps> = ({ initialData }) => {
                     <div className="flex items-center gap-x-4">
                       <Input
                         disabled={loading}
-                        placeholder="Color value"
+                        placeholder="#000000"
                         {...field}
                       />
                       <div

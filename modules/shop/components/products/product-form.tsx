@@ -1,8 +1,8 @@
 "use client";
-
-import { AlertModal } from "@/components/alert-modal";
-import { Heading } from "@/components/heading";
-import ImageUpload from "@/components/image-upload";
+import React, { useState } from "react";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import * as z from "zod";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -23,16 +23,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Separator } from "@/components/ui/separator";
+import ImageUpload from "@/components/image-upload";
 import { productSchema } from "@/schemas/shop";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Category, Color, Image, Product, Size } from "@prisma/client";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
-import { useState } from "react";
-import { useForm } from "react-hook-form";
 import toast from "react-hot-toast";
-import * as z from "zod";
+import { AlertModal } from "@/components/alert-modal";
+import { Heading } from "@/components/heading";
+import { Category, Color, Image, Product, Size } from "@prisma/client";
 
 interface ProductFormProps {
   initialData:
@@ -107,9 +106,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
   const onDelete = async () => {
     try {
       setLoading(true);
-      await axios.delete(
-        `/api/${params.storeId}/products/${params.productId}`
-      );
+      await axios.delete(`/api/${params.storeId}/products/${params.productId}`);
       router.refresh();
       router.push(`/${params.storeId}/products`);
       toast.success("Product deleted");
@@ -147,14 +144,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}
-          className="space-y-8 w-full"
+          className="w-full space-y-8"
         >
           <FormField
             control={form.control}
             name="images"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Images</FormLabel>
+                <FormLabel>Background Image</FormLabel>
                 <FormControl>
                   <ImageUpload
                     value={field.value.map((image) => image.url)}
@@ -164,7 +161,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     }
                     onRemove={(url) =>
                       field.onChange([
-                        ...field.value.filter((current) => current.url !== url),
+                        ...field.value.filter((image) => image.url !== url),
                       ])
                     }
                   />
@@ -183,7 +180,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <FormControl>
                     <Input
                       disabled={loading}
-                      placeholder="Product name"
+                      placeholder="Product Name"
                       {...field}
                     />
                   </FormControl>
@@ -201,7 +198,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     <Input
                       type="number"
                       disabled={loading}
-                      placeholder="9.99"
+                      placeholder="Product Price"
                       {...field}
                     />
                   </FormControl>
@@ -224,8 +221,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue
-                          placeholder="Select a category"
                           defaultValue={field.value}
+                          placeholder="Select a Category"
                         />
                       </SelectTrigger>
                     </FormControl>
@@ -256,8 +253,8 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue
-                          placeholder="Select a size"
                           defaultValue={field.value}
+                          placeholder="Select a size"
                         />
                       </SelectTrigger>
                     </FormControl>
@@ -288,15 +285,21 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     <FormControl>
                       <SelectTrigger>
                         <SelectValue
-                          placeholder="Select a color"
                           defaultValue={field.value}
+                          placeholder="Select a color"
                         />
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
                       {colors.map((color) => (
-                        <SelectItem key={color.id} value={color.id}>
-                          {color.name}
+                        <SelectItem
+                          style={{ display: "flex" }}
+                          key={color.id}
+                          value={color.id}
+                        >
+                          <span style={{ color: color.value }}>
+                            {color.name}
+                          </span>
                         </SelectItem>
                       ))}
                     </SelectContent>
@@ -309,7 +312,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               control={form.control}
               name="isFeatured"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="flex flex-row items-start p-4 space-x-3 space-y-0 border rounded-md">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -319,7 +322,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <div className="space-y-1 leading-none">
                     <FormLabel>Featured</FormLabel>
                     <FormDescription>
-                      This product will appear on the home page
+                      The product will appear on the home page.
                     </FormDescription>
                   </div>
                 </FormItem>
@@ -329,7 +332,7 @@ export const ProductForm: React.FC<ProductFormProps> = ({
               control={form.control}
               name="isArchived"
               render={({ field }) => (
-                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
+                <FormItem className="flex flex-row items-start p-4 space-x-3 space-y-0 border rounded-md">
                   <FormControl>
                     <Checkbox
                       checked={field.value}
@@ -339,14 +342,14 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <div className="space-y-1 leading-none">
                     <FormLabel>Archived</FormLabel>
                     <FormDescription>
-                      This product will not appear anywhere in the store
+                      The product will appear anywhere in the store.
                     </FormDescription>
                   </div>
                 </FormItem>
               )}
             />
           </div>
-          <Button disabled={loading} type="submit" className="ml-auto">
+          <Button disabled={loading} className="ml-auto" type="submit">
             {action}
           </Button>
         </form>

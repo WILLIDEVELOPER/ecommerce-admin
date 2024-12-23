@@ -1,7 +1,7 @@
 "use client";
 
 import { ColumnDef } from "@tanstack/react-table";
-import { CellAction } from "@/modules/shop/components/billboard/cell-action";
+import { CellAction } from "@/modules/shop/components/products/cell-action";
 
 // This type is used to define the shape of our data.
 // You can use a Zod schema here if you want.
