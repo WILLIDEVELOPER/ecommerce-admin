@@ -28,8 +28,8 @@ export const colorSchema = z.object({
 });
 
 export const productSchema = z.object({
-  name: z.string().min(1, { message: "Name is required" }),
-  images: z.object({url: z.string()}).array(),
+  name: z.string().min(1),
+  images: z.object({ url: z.string() }).array(),
   price: z.coerce.number().min(1),
   categoryId: z.string().min(1),
   colorId: z.string().min(1),

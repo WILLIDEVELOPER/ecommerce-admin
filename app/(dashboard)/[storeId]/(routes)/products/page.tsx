@@ -1,6 +1,6 @@
 import { db } from "@/lib/db";
 import { formatter } from "@/lib/utils";
-import { ProductClient } from "@/modules/shop/components/products/billboard-client";
+import { ProductClient } from "@/modules/shop/components/products/product-client";
 import { ProductColumn } from "@/modules/shop/components/products/columns";
 import { format } from "date-fns";
 

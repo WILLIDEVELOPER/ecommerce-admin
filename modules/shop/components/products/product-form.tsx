@@ -1,4 +1,5 @@
 "use client";
+
 import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -31,20 +32,20 @@ import { useParams, useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { AlertModal } from "@/components/alert-modal";
 import { Heading } from "@/components/heading";
-import { Category, Color, Image, Product, Size } from "@prisma/client";
+import { Category, Color, Image, Size } from "@prisma/client";
+
+type ProductFormValues = z.infer<typeof productSchema>;
 
 interface ProductFormProps {
   initialData:
-    | (Product & {
+    | (ProductFormValues & {
         images: Image[];
       })
     | null;
   categories: Category[];
-  sizes: Size[];
   colors: Color[];
+  sizes: Size[];
 }
-
-type ProductFormValues = z.infer<typeof productSchema>;
 
 export const ProductForm: React.FC<ProductFormProps> = ({
   initialData,
@@ -66,7 +67,6 @@ export const ProductForm: React.FC<ProductFormProps> = ({
     defaultValues: initialData
       ? {
           ...initialData,
-          price: parseFloat(String(initialData.price)),
         }
       : {
           name: "",
@@ -156,14 +156,16 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                   <ImageUpload
                     value={field.value.map((image) => image.url)}
                     disabled={loading}
-                    onChange={(url) =>
-                      field.onChange([...field.value, { url }])
-                    }
-                    onRemove={(url) =>
-                      field.onChange([
-                        ...field.value.filter((image) => image.url !== url),
-                      ])
-                    }
+                    onChange={(url) => {
+                      const updatedImages = [...field.value, { url }];
+                      field.onChange(updatedImages); // Actualiza directamente
+                    }}
+                    onRemove={(url) => {
+                      const updatedImages = field.value.filter(
+                        (image) => image.url !== url
+                      );
+                      field.onChange(updatedImages); // Filtra y actualiza
+                    }}
                   />
                 </FormControl>
                 <FormMessage />
