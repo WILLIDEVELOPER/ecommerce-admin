@@ -157,15 +157,18 @@ export const ProductForm: React.FC<ProductFormProps> = ({
                     value={field.value.map((image) => image.url)}
                     disabled={loading}
                     onChange={(url) => {
-                      const updatedImages = [...field.value, { url }];
-                      field.onChange(updatedImages); // Actualiza directamente
+                      const currentImages = form.getValues("images"); // Retrieve current images
+                      const newImage = { url: url }; // Create a new image object with the URL
+                      const updatedImages = [...currentImages, newImage]; // Add the new image to the array
+                      form.setValue("images", updatedImages, {
+                        shouldValidate: true,
+                      }); // Update the form with validation
                     }}
-                    onRemove={(url) => {
-                      const updatedImages = field.value.filter(
-                        (image) => image.url !== url
-                      );
-                      field.onChange(updatedImages); // Filtra y actualiza
-                    }}
+                    onRemove={(url) =>
+                      field.onChange([
+                        ...field.value.filter((image) => image.url !== url),
+                      ])
+                    }
                   />
                 </FormControl>
                 <FormMessage />
